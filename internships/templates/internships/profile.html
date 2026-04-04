@@ -1,0 +1,76 @@
+{% extends 'internships/base.html' %}
+
+{% block title %}My Profile - Internship Founder{% endblock %}
+
+{% block content %}
+<div style="max-width: 680px; margin: 0 auto;">
+    <h2 style="margin-bottom: 0.5rem;">My Profile</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">View and update your academic profile and resume.</p>
+
+    <div class="stats-grid" style="margin-bottom: 2rem; grid-template-columns: repeat(4, 1fr);">
+        <div class="card" style="text-align: center; padding: 1rem;">
+            <span style="font-size: 1.5rem; font-weight: 700; color: var(--primary); display: block;">{{ stats.total }}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Total Apps</span>
+        </div>
+        <div class="card" style="text-align: center; padding: 1rem;">
+            <span style="font-size: 1.5rem; font-weight: 700; color: var(--success); display: block;">{{ stats.selected }}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Selected</span>
+        </div>
+        <div class="card" style="text-align: center; padding: 1rem;">
+            <span style="font-size: 1.5rem; font-weight: 700; color: #4F46E5; display: block;">{{ stats.shortlisted }}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Shortlisted</span>
+        </div>
+        <div class="card" style="text-align: center; padding: 1rem;">
+            <span style="font-size: 1.5rem; font-weight: 700; color: var(--error); display: block;">{{ stats.rejected }}</span>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Rejected</span>
+        </div>
+    </div>
+    <div class="card" style="padding: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border);">
+            <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #818CF8); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 700;">
+                {{ user.username|slice:":1"|upper }}
+            </div>
+            <div>
+                <h3>{{ user.get_full_name|default:user.username }}</h3>
+                <p style="color: var(--text-muted);">{{ user.email }}</p>
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" name="phone" value="{{ u_form.instance.phone }}">
+                </div>
+                <div class="form-group">
+                    <label>CGPA</label>
+                    <input type="number" name="cgpa" step="0.01" min="0" max="10" value="{{ u_form.instance.cgpa }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>College</label>
+                <input type="text" name="college" value="{{ u_form.instance.college }}">
+            </div>
+            <div class="form-group">
+                <label>Degree</label>
+                <input type="text" name="degree" value="{{ u_form.instance.degree }}">
+            </div>
+            <div class="form-group">
+                <label>Skills</label>
+                <textarea name="skills" rows="3">{{ u_form.instance.skills }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Resume</label>
+                {% if u_form.instance.resume %}
+                    <p style="margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">
+                        Current: <a href="{{ u_form.instance.resume.url }}" style="color: var(--primary);" target="_blank">View Resume</a>
+                    </p>
+                {% endif %}
+                <input type="file" name="resume" style="background: var(--background);">
+            </div>
+            <button type="submit" class="btn btn-primary" style="padding: 0.9rem 2.5rem;">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

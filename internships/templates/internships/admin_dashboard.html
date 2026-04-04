@@ -1,0 +1,78 @@
+{% extends 'internships/base.html' %}
+
+{% block title %}Admin Dashboard - Internship Founder{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 0.5rem;">Admin Dashboard</h2>
+<p style="color: var(--text-muted); margin-bottom: 2rem;">Platform Overview & Statistics</p>
+
+<div class="stats-grid">
+    <div class="card stat-item">
+        <span class="stat-value">{{ stats.total_students }}</span>
+        <span style="color: var(--text-muted);">Total Students</span>
+    </div>
+    <div class="card stat-item">
+        <span class="stat-value">{{ stats.total_internships }}</span>
+        <span style="color: var(--text-muted);">Total Internships</span>
+    </div>
+    <div class="card stat-item">
+        <span class="stat-value">{{ stats.total_applications }}</span>
+        <span style="color: var(--text-muted);">Total Applications</span>
+    </div>
+</div>
+
+<h3 style="margin: 2.5rem 0 1.5rem;">Applications Analytics</h3>
+<div class="card" style="margin-bottom: 2rem;">
+    <canvas id="statusChart" height="100"></canvas>
+</div>
+
+{{ status_data_json|json_script:"status-data" }}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusData = JSON.parse(document.getElementById('status-data').textContent);
+        const labels = statusData.map(item => item.status);
+        const counts = statusData.map(item => item.count);
+        
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Number of Applications',
+                    data: counts,
+                    backgroundColor: [
+                        'rgba(79, 70, 229, 0.6)',
+                        'rgba(16, 185, 129, 0.6)',
+                        'rgba(245, 158, 11, 0.6)',
+                        'rgba(239, 68, 68, 0.6)',
+                        'rgba(107, 114, 128, 0.6)'
+                    ],
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    });
+</script>
+
+<div style="margin-top: 2rem; display: flex; gap: 1rem;">
+    <a href="{% url 'admin_application_list' %}" class="btn btn-primary">Manage Applications</a>
+    <a href="{% url 'admin_internship_list' %}" class="btn btn-outline">Manage Internships</a>
+    <a href="{% url 'admin_company_list' %}" class="btn btn-outline">Manage Companies</a>
+</div>
+{% endblock %}

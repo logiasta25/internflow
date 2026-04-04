@@ -1,0 +1,70 @@
+{% extends 'internships/base.html' %}
+
+{% block title %}Manage Internships - Admin{% endblock %}
+
+{% block content %}
+<div class="header-action" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2>Manage Internships</h2>
+    <div>
+        <a href="{% url 'admin_internship_create' %}" class="btn btn-primary" style="margin-right: 1rem;">+ New Internship</a>
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline">Back to Dashboard</a>
+    </div>
+</div>
+
+<div class="card">
+    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <thead>
+            <tr style="border-bottom: 2px solid var(--border-color);">
+                <th style="padding: 1rem;">Title</th>
+                <th style="padding: 1rem;">Company</th>
+                <th style="padding: 1rem;">Mode</th>
+                <th style="padding: 1rem;">Deadline</th>
+                <th style="padding: 1rem;">Status</th>
+                <th style="padding: 1rem; text-align: right;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for internship in internships %}
+            <tr style="border-bottom: 1px solid var(--border-color);">
+                <td style="padding: 1rem;"><strong>{{ internship.title }}</strong></td>
+                <td style="padding: 1rem;">{{ internship.company.name }}</td>
+                <td style="padding: 1rem;">{{ internship.mode }}</td>
+                <td style="padding: 1rem;">{{ internship.last_date|date:"M d, Y" }}</td>
+                <td style="padding: 1rem;">
+                    {% if internship.is_active %}
+                        <span style="color: green; font-weight: 500;">Active</span>
+                    {% else %}
+                        <span style="color: red; font-weight: 500;">Inactive</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 1rem; text-align: right;">
+                    <a href="{% url 'admin_internship_update' internship.pk %}" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.9rem; margin-right: 0.5rem;">Edit</a>
+                    <a href="{% url 'admin_internship_delete' internship.pk %}" class="btn btn-primary" style="background-color: #dc2626; padding: 0.4rem 0.8rem; font-size: 0.9rem; border-color: #dc2626;">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="padding: 2rem; text-align: center; color: var(--text-muted);">No internships found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+<div style="margin-top: 2rem; display: flex; justify-content: center; gap: 0.5rem; align-items: center;">
+    {% if internships.has_previous %}
+        <a href="?page=1" class="btn btn-outline">&laquo; First</a>
+        <a href="?page={{ internships.previous_page_number }}" class="btn btn-outline">Previous</a>
+    {% endif %}
+
+    <span style="padding: 0 1rem; color: var(--text-muted); font-weight: 500;">
+        Page {{ internships.number }} of {{ internships.paginator.num_pages }}
+    </span>
+
+    {% if internships.has_next %}
+        <a href="?page={{ internships.next_page_number }}" class="btn btn-outline">Next</a>
+        <a href="?page={{ internships.paginator.num_pages }}" class="btn btn-outline">Last &raquo;</a>
+    {% endif %}
+</div>
+{% endblock %}

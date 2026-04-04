@@ -1,0 +1,50 @@
+{% extends 'internships/base.html' %}
+{% load static %}
+
+{% block title %}Internship Founder - Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Find Your Next Big Opportunity</h1>
+    <p>Connect with top companies and jumpstart your career with premium internships.</p>
+    <div style="margin-top: 2rem;">
+        <a href="{% url 'internship_list' %}" class="btn btn-primary">Browse Internships</a>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="btn btn-outline" style="margin-left: 1rem;">Join as Student</a>
+        {% endif %}
+    </div>
+</section>
+
+<div class="stats-grid">
+    <div class="card stat-item">
+        <span class="stat-value">{{ total_companies }}</span>
+        <span class="text-muted">Companies</span>
+    </div>
+    <div class="card stat-item">
+        <span class="stat-value">{{ total_internships }}</span>
+        <span class="text-muted">Total Internships</span>
+    </div>
+    <div class="card stat-item">
+        <span class="stat-value">{{ total_placed }}</span>
+        <span class="text-muted">Students Placed</span>
+    </div>
+</div>
+
+<h2 style="margin: 3rem 0 1.5rem;">Featured Internships</h2>
+<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+    {% for internship in featured_internships %}
+        <div class="card">
+            <h3 style="margin-bottom: 0.5rem;">{{ internship.title }}</h3>
+            <p style="color: var(--primary); font-weight: 600; margin-bottom: 1rem;">{{ internship.company.name }}</p>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <span class="badge badge-{{ internship.mode|lower }}">{{ internship.mode }}</span>
+                <span class="text-muted">{{ internship.location }}</span>
+            </div>
+            <p class="text-muted" style="margin-bottom: 1.5rem;">₹{{ internship.stipend }} • {{ internship.duration }}</p>
+            <a href="{% url 'internship_detail' internship.pk %}" class="btn btn-outline" style="width: 100%;">View Details</a>
+        </div>
+    {% empty %}
+        <p>No internships available at the moment.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+ALTER SESSION SET "_ORACLE_SCRIPT"=true;
+-- Drop if exists (catch error -1918)
+BEGIN
+  EXECUTE IMMEDIATE 'DROP USER internship_user CASCADE';
+EXCEPTION
+  WHEN OTHERS THEN
+    IF SQLCODE != -1918 THEN
+      RAISE;
+    END IF;
+END;
+/
+CREATE USER internship_user IDENTIFIED BY internship123;
+GRANT CONNECT, RESOURCE, DBA TO internship_user;
+ALTER USER internship_user QUOTA UNLIMITED ON USERS;
+EXIT;

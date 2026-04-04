@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Internship Platform{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <nav>
+        <a href="/" class="logo">Internship Founder</a>
+        <ul>
+            {% if request.path == '/' and request.user.is_authenticated %}
+                <!-- Blank on home page if logged in -->
+            {% elif request.user.is_authenticated %}
+                {% if request.user.is_staff %}
+                    <!-- Admin navbar -->
+                    <li><a href="/admin/">Admin Panel</a></li>
+                    <li><a href="/admin-dashboard/">Dashboard</a></li>
+                    <li><a href="/logout/">Logout ({{ request.user.username }})</a></li>
+                {% else %}
+                    <!-- Student navbar -->
+                    <li><a href="/internships/">Internships</a></li>
+                    <li><a href="/dashboard/">My Applications</a></li>
+                    <li><a href="/profile/">Profile</a></li>
+                    <li><a href="/logout/">Logout ({{ request.user.username }})</a></li>
+                {% endif %}
+            {% else %}
+                <!-- Public navbar (homepage, not logged in) -->
+                <li><a href="/login/">Login</a></li>
+                <li><a href="/register/" class="btn btn-primary">Register</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div class="container">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Internship Founder Platform. All rights reserved.</p>
+    </footer>
+
+    {% if request.user.is_authenticated %}
+    <script>
+        // Prevent going back to the login page after logging in
+        window.history.pushState(null, null, window.location.href);
+        window.onpopstate = function () {
+            window.history.go(1);
+        };
+
+        // 5-minute inactivity auto-logout timer
+        let inactivityTimer;
+        function resetTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                window.location.href = "{% url 'logout' %}";
+            }, 5 * 60 * 1000); // 5 minutes in milliseconds
+        }
+        
+        // Listen to activity events
+        window.onload = resetTimer;
+        window.onmousemove = resetTimer;
+        window.onmousedown = resetTimer;
+        window.ontouchstart = resetTimer;
+        window.onclick = resetTimer;
+        window.onkeypress = resetTimer;
+        window.addEventListener('scroll', resetTimer, true);
+    </script>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,22 @@
+{% extends 'internships/base.html' %}
+
+{% block title %}Apply - Internship Founder{% endblock %}
+
+{% block content %}
+<div style="max-width: 620px; margin: 0 auto;">
+    <a href="{% url 'internship_detail' internship.pk %}" style="color: var(--primary); font-size: 0.9rem;">← Back to Details</a>
+    <div class="card" style="margin-top: 1.5rem; padding: 2.5rem;">
+        <h2>Apply: {{ internship.title }}</h2>
+        <p style="color: var(--primary); margin-bottom: 2rem;">{{ internship.company.name }}</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_cover_letter">Cover Letter (Optional)</label>
+                <textarea name="cover_letter" id="id_cover_letter" rows="6" 
+                  placeholder="Introduce yourself and explain why you're a great fit..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="padding: 0.9rem 2.5rem;">Submit Application</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

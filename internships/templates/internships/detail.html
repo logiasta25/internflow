@@ -1,0 +1,97 @@
+{% extends 'internships/base.html' %}
+
+{% block title %}{{ internship.title }} - Internship Founder{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px; margin: 0 auto;">
+    <a href="{% url 'internship_list' %}" style="color: var(--primary); font-size: 0.9rem;">← Back to Listings</a>
+
+    <div class="card" style="margin-top: 1.5rem; padding: 2.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                    <h1 style="font-size: 1.8rem; margin: 0;">{{ internship.title }}</h1>
+                    {% if internship.last_date <= closing_soon_date and internship.last_date >= today %}
+                        <span class="badge" style="background: #FEE2E2; color: #991B1B; font-size: 0.8rem; padding: 4px 10px;">Closing Soon</span>
+                    {% endif %}
+                </div>
+                <p style="color: var(--primary); font-weight: 600; font-size: 1.1rem;">{{ internship.company.name }}</p>
+            </div>
+            {% if internship.company.logo %}
+                <img src="{{ internship.company.logo.url }}" alt="{{ internship.company.name }}" style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border);">
+            {% endif %}
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; padding: 1.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 2rem;">
+            <div style="text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em;">Mode</p>
+                <strong><span class="badge badge-{{ internship.mode|lower }}">{{ internship.mode }}</span></strong>
+            </div>
+            <div style="text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em;">Location</p>
+                <strong>{{ internship.location }}</strong>
+            </div>
+            <div style="text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em;">Stipend</p>
+                <strong>₹{{ internship.stipend }}/mo</strong>
+            </div>
+            <div style="text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em;">Duration</p>
+                <strong>{{ internship.duration }}</strong>
+            </div>
+            <div style="text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em;">Openings</p>
+                <strong>{{ internship.openings }}</strong>
+            </div>
+            <div style="text-align: center;">
+                <p style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em;">Apply By</p>
+                <strong>{{ internship.last_date }}</strong>
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 0.75rem;">About the Role</h3>
+        <p style="margin-bottom: 2rem; color: var(--text-muted); line-height: 1.8;">{{ internship.description }}</p>
+
+        <h3 style="margin-bottom: 0.75rem;">Requirements</h3>
+        <p style="margin-bottom: 2rem; color: var(--text-muted); line-height: 1.8;">{{ internship.requirements }}</p>
+
+        <h3 style="margin-bottom: 0.75rem;">Skills Required</h3>
+        <p style="margin-bottom: 2rem; color: var(--text-muted);">{{ internship.skills_required }}</p>
+
+        <hr style="border-color: var(--border); margin: 2rem 0;">
+
+        {% if user.is_authenticated %}
+            {% if has_applied %}
+                <div class="alert" style="background: #EEF2FF; color: var(--primary); border-radius: var(--radius); padding: 1.5rem;">
+                    <h4>Your Application Status</h4>
+                    <p style="font-size: 1.2rem; font-weight: 700; margin-top: 0.5rem;">{{ application.status }}</p>
+                    {% if application.admin_remarks %}
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Remarks: <em>{{ application.admin_remarks }}</em></p>
+                    {% endif %}
+                </div>
+            {% else %}
+                <h3>Apply for this Internship</h3>
+                <form method="post" action="{% url 'apply_internship' internship.pk %}" style="margin-top: 1rem;">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_cover_letter">Cover Letter (Optional)</label>
+                        <textarea name="cover_letter" id="id_cover_letter" rows="5" placeholder="Tell us why you're a great fit for this role..."></textarea>
+                    </div>
+                    {% if internship.apply_link %}
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="btn btn-outline" style="padding: 0.9rem 2.5rem;">Apply on Portal</button>
+                            <a href="{{ internship.apply_link }}" target="_blank" class="btn btn-primary" style="padding: 0.9rem 2.5rem;">Apply Now &nearr;</a>
+                        </div>
+                    {% else %}
+                        <button type="submit" class="btn btn-primary" style="padding: 0.9rem 2.5rem;">Submit Application</button>
+                    {% endif %}
+                </form>
+            {% endif %}
+        {% else %}
+            <div style="text-align: center; padding: 2rem; background: var(--background); border-radius: var(--radius);">
+                <p>Please <a href="{% url 'login' %}" style="color: var(--primary);">sign in</a> to apply.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

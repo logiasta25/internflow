@@ -1,0 +1,14 @@
+{% extends 'internships/base.html' %}
+
+{% block title %}403 - Forbidden{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 10rem 1rem;">
+    <h1 style="font-size: 6rem; color: var(--error); margin-bottom: 1rem;">403</h1>
+    <h2 style="margin-bottom: 1.5rem;">Access Forbidden</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+        You don't have permission to access this page. Please contact the administrator if you believe this is an error.
+    </p>
+    <a href="{% url 'home' %}" class="btn btn-primary" style="padding: 1rem 3rem;">Go Home</a>
+</div>
+{% endblock %}

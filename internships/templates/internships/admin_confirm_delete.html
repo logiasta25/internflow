@@ -1,0 +1,25 @@
+{% extends 'internships/base.html' %}
+
+{% block title %}Confirm Deletion - Admin{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 2rem auto; text-align: center; padding: 3rem;">
+    <div style="font-size: 3rem; color: #dc2626; margin-bottom: 1rem;">
+        ⚠️
+    </div>
+    
+    <h2 style="margin-bottom: 1rem;">Confirm Deletion</h2>
+    
+    <p style="font-size: 1.1rem; color: var(--text-color); margin-bottom: 2rem;">
+        Are you sure you want to delete <strong>"{{ object }}"</strong>? 
+        <br><br>
+        <span style="color: #dc2626; font-size: 0.95rem;">This action cannot be undone.</span>
+    </p>
+
+    <form method="post" style="display: flex; gap: 1rem; justify-content: center;">
+        {% csrf_token %}
+        <a href="{{ cancel_url }}" class="btn btn-outline" style="padding: 0.75rem 2rem;">Cancel</a>
+        <button type="submit" class="btn btn-primary" style="background-color: #dc2626; border-color: #dc2626; padding: 0.75rem 2rem;">Yes, delete</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'internships/base.html' %}
+
+{% block title %}My Dashboard - Internship Founder{% endblock %}
+
+{% block content %}
+<h2 style="margin-bottom: 0.5rem;">My Applications</h2>
+<p style="color: var(--text-muted); margin-bottom: 2rem;">Track the status of all your internship applications.</p>
+
+<div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
+    <a href="{% url 'dashboard' %}" class="btn {% if not status_filter %}btn-primary{% else %}btn-outline{% endif %}" style="padding: 0.4rem 1rem; font-size: 0.85rem;">All</a>
+    <a href="{% url 'dashboard' %}?status=Applied" class="btn {% if status_filter == 'Applied' %}btn-primary{% else %}btn-outline{% endif %}" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Applied</a>
+    <a href="{% url 'dashboard' %}?status=Under Review" class="btn {% if status_filter == 'Under Review' %}btn-primary{% else %}btn-outline{% endif %}" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Under Review</a>
+    <a href="{% url 'dashboard' %}?status=Shortlisted" class="btn {% if status_filter == 'Shortlisted' %}btn-primary{% else %}btn-outline{% endif %}" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Shortlisted</a>
+    <a href="{% url 'dashboard' %}?status=Selected" class="btn {% if status_filter == 'Selected' %}btn-primary{% else %}btn-outline{% endif %}" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Selected</a>
+    <a href="{% url 'dashboard' %}?status=Rejected" class="btn {% if status_filter == 'Rejected' %}btn-primary{% else %}btn-outline{% endif %}" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Rejected</a>
+</div>
+
+{% if applications %}
+<div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden;">
+        <thead>
+            <tr style="background: var(--background);">
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Internship</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Company</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Applied On</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Status</th>
+                <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-muted);">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in applications %}
+            <tr style="border-top: 1px solid var(--border);">
+                <td style="padding: 1rem;">
+                    <a href="{% url 'internship_detail' app.internship.pk %}" style="color: var(--primary); font-weight: 600;">{{ app.internship.title }}</a>
+                </td>
+                <td style="padding: 1rem;">{{ app.internship.company.name }}</td>
+                <td style="padding: 1rem; color: var(--text-muted);">{{ app.applied_at|date:"d M Y" }}</td>
+                <td style="padding: 1rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                        {% if app.status == 'Selected' %}
+                            <span class="badge" style="background: #D1FAE5; color: #065F46; width: fit-content;">{{ app.status }}</span>
+                        {% elif app.status == 'Shortlisted' %}
+                            <span class="badge" style="background: #DBEAFE; color: #1E40AF; width: fit-content;">{{ app.status }}</span>
+                        {% elif app.status == 'Rejected' %}
+                            <span class="badge" style="background: #FEE2E2; color: #991B1B; width: fit-content;">{{ app.status }}</span>
+                        {% elif app.status == 'Under Review' %}
+                            <span class="badge" style="background: #FEF3C7; color: #92400E; width: fit-content;">{{ app.status }}</span>
+                        {% else %}
+                            <span class="badge" style="background: var(--background); color: var(--text-muted); width: fit-content;">{{ app.status }}</span>
+                        {% endif %}
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Last updated: {{ app.updated_at|timesince }} ago</span>
+                    </div>
+                </td>
+                <td style="padding: 1rem;">
+                    {% if app.status == 'Applied' %}
+                        <form method="post" action="{% url 'withdraw_application' app.pk %}" onsubmit="return confirm('Are you sure you want to withdraw this application?')">
+                            {% csrf_token %}
+                            <button type="submit" style="background: none; color: var(--error); border: 1px solid var(--error); padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 0.9rem;">Withdraw</button>
+                        </form>
+                    {% else %}
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+    <div style="text-align: center; padding: 5rem 0; background: white; border-radius: var(--radius); border: 1px solid var(--border);">
+        <div style="font-size: 3rem;">📋</div>
+        <h3 style="margin-top: 1rem;">No applications yet</h3>
+        <p style="color: var(--text-muted); margin: 0.5rem 0 1.5rem;">Start exploring internships and apply today!</p>
+        <a href="{% url 'internship_list' %}" class="btn btn-primary">Browse Internships</a>
+    </div>
+{% endif %}
+{% endblock %}

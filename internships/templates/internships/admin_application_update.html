@@ -1,0 +1,50 @@
+{% extends 'internships/base.html' %}
+
+{% block title %}Update Application - Admin{% endblock %}
+
+{% block content %}
+<div class="header-action" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h2>Update Application: {{ application.student.user.username }}</h2>
+    <a href="{% url 'admin_application_list' %}" class="btn btn-outline">Back to Applications</a>
+</div>
+
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <div style="margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1rem;">Student Information</h3>
+        <p><strong>Name:</strong> {{ application.student.user.first_name }} {{ application.student.user.last_name }} ({{ application.student.user.username }})</p>
+        <p><strong>Email:</strong> {{ application.student.user.email }}</p>
+        <p><strong>College:</strong> {{ application.student.college }}</p>
+        <p><strong>CGPA:</strong> {{ application.student.cgpa }}</p>
+        <p><strong>Skills:</strong> {{ application.student.skills }}</p>
+        <p><strong>Resume:</strong> <a href="{{ application.student.resume.url }}" target="_blank" style="color: var(--primary);">View Resume</a></p>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 2rem 0;">
+
+    <div style="margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1rem;">Application Information</h3>
+        <p><strong>Internship:</strong> {{ application.internship.title }} at {{ application.internship.company.name }}</p>
+        <p><strong>Cover Letter:</strong></p>
+        <div style="background-color: var(--bg-color); padding: 1rem; border-radius: 8px; margin-top: 0.5rem; white-space: pre-wrap;">{{ application.cover_letter }}</div>
+    </div>
+
+    <form method="post" style="margin-top: 2rem; background-color: var(--bg-color); padding: 1.5rem; border-radius: 8px;">
+        {% csrf_token %}
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="status" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Application Status</label>
+            <select name="status" id="status" class="form-control" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                <option value="Applied" {% if application.status == 'Applied' %}selected{% endif %}>Applied</option>
+                <option value="Under Review" {% if application.status == 'Under Review' %}selected{% endif %}>Under Review</option>
+                <option value="Shortlisted" {% if application.status == 'Shortlisted' %}selected{% endif %}>Shortlisted</option>
+                <option value="Selected" {% if application.status == 'Selected' %}selected{% endif %}>Selected</option>
+                <option value="Rejected" {% if application.status == 'Rejected' %}selected{% endif %}>Rejected</option>
+            </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 2rem;">
+            <label for="admin_remarks" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Admin Remarks</label>
+            <textarea name="admin_remarks" id="admin_remarks" rows="4" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">{{ application.admin_remarks|default:'' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Update Status</button>
+    </form>
+</div>
+{% endblock %}
