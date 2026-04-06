@@ -1,1 +1,1 @@
-web: python manage.py migrate --noinput && gunicorn internship_platform.wsgi --log-file -
+web: python manage.py migrate --noinput && python manage.py create_superuser && gunicorn internship_platform.wsgi --log-file -
