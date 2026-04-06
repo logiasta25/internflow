@@ -13,6 +13,21 @@ class InternshipAdmin(admin.ModelAdmin):
     list_display = ('title', 'company', 'mode', 'location', 'stipend', 'openings', 'last_date', 'is_active')
     list_filter = ('mode', 'is_active', 'company')
     search_fields = ('title', 'company__name', 'location')
+    raw_id_fields = ('company',)
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('company', 'title', 'description'),
+        }),
+        ('Details', {
+            'fields': ('requirements', 'skills_required', 'duration', 'location', 'mode', 'apply_link'),
+        }),
+        ('Terms', {
+            'fields': ('stipend', 'openings', 'last_date'),
+        }),
+        ('Status', {
+            'fields': ('is_active',),
+        }),
+    )
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):

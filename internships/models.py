@@ -19,23 +19,25 @@ class Internship(models.Model):
         ('Hybrid', 'Hybrid'),
     ]
 
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='internships')
-    title = models.CharField(max_length=255)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='internships', blank=True, null=True)
+    title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True, null=True)
     requirements = models.TextField(blank=True, null=True)
     skills_required = models.TextField(blank=True, null=True)
-    stipend = models.DecimalField(max_digits=10, decimal_places=2)
+    stipend = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     duration = models.CharField(max_length=100, blank=True)
     location = models.CharField(max_length=255, blank=True)
-    mode = models.CharField(max_length=20, choices=MODE_CHOICES)
-    openings = models.PositiveIntegerField()
-    last_date = models.DateField()
+    mode = models.CharField(max_length=20, choices=MODE_CHOICES, blank=True)
+    openings = models.PositiveIntegerField(blank=True, null=True)
+    last_date = models.DateField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     apply_link = models.URLField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.title} at {self.company.name}"
+        company_name = self.company.name if self.company else "Unknown Company"
+        title = self.title or "Untitled Internship"
+        return f"{title} at {company_name}"
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_profile')
