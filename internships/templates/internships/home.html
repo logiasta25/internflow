@@ -15,22 +15,8 @@
     </div>
 </section>
 
-<div class="stats-grid">
-    <div class="card stat-item">
-        <span class="stat-value">{{ total_companies }}</span>
-        <span class="text-muted">Companies</span>
-    </div>
-    <div class="card stat-item">
-        <span class="stat-value">{{ total_internships }}</span>
-        <span class="text-muted">Total Internships</span>
-    </div>
-    <div class="card stat-item">
-        <span class="stat-value">{{ total_placed }}</span>
-        <span class="text-muted">Students Placed</span>
-    </div>
-</div>
-
 <h2 style="margin: 3rem 0 1.5rem;">Featured Internships</h2>
+
 <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
     {% for internship in featured_internships %}
         <div class="card">

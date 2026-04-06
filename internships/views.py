@@ -12,14 +12,8 @@ from .models import Company, Internship, Student, Application
 from .forms import StudentRegistrationForm, StudentProfileForm, ApplicationForm, CompanyForm, InternshipForm
 
 def home(request):
-    total_companies = Company.objects.count()
-    total_internships = Internship.objects.count()
-    total_placed = Application.objects.filter(status='Selected').count()
     featured_internships = Internship.objects.filter(is_active=True).order_by('-created_at')[:3]
     return render(request, 'internships/home.html', {
-        'total_companies': total_companies,
-        'total_internships': total_internships,
-        'total_placed': total_placed,
         'featured_internships': featured_internships,
     })
 

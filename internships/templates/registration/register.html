@@ -8,8 +8,17 @@
         <h2 style="margin-bottom: 0.5rem;">Create Your Account</h2>
         <p style="color: var(--text-muted); margin-bottom: 2rem;">Join Internship Founder and kickstart your career.</p>
 
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" id="register-form">
             {% csrf_token %}
+
+            <h4 style="margin-bottom: 1rem; color: var(--primary);">Choose Role</h4>
+            <div class="form-group" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                {% for radio in form.role %}
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        {{ radio.tag }} {{ radio.choice_label }}
+                    </label>
+                {% endfor %}
+            </div>
 
             <h4 style="margin-bottom: 1rem; color: var(--primary);">Account Information</h4>
             <div class="form-group">
@@ -42,41 +51,69 @@
                 </div>
             </div>
 
-            <hr style="margin: 1.5rem 0; border-color: var(--border);">
-            <h4 style="margin-bottom: 1rem; color: var(--primary);">Academic Profile</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div class="form-group">
-                    <label for="id_phone">Phone Number</label>
-                    <input type="text" name="phone" id="id_phone" required>
+            <div id="student-profile-section">
+                <hr style="margin: 1.5rem 0; border-color: var(--border);">
+                <h4 style="margin-bottom: 1rem; color: var(--primary);">Academic Profile</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="id_phone">Phone Number <span style="color: var(--error);">*</span></label>
+                        <input type="text" name="phone" id="id_phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="id_cgpa">CGPA <span style="color: var(--error);">*</span></label>
+                        <input type="number" name="cgpa" id="id_cgpa" step="0.01" min="0" max="10">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="id_cgpa">CGPA</label>
-                    <input type="number" name="cgpa" id="id_cgpa" step="0.01" min="0" max="10" required>
+                    <label for="id_college">College Name <span style="color: var(--error);">*</span></label>
+                    <input type="text" name="college" id="id_college">
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="id_college">College Name</label>
-                <input type="text" name="college" id="id_college" required>
-            </div>
-            <div class="form-group">
-                <label for="id_degree">Degree</label>
-                <input type="text" name="degree" id="id_degree" placeholder="e.g. B.Tech Computer Science" required>
-            </div>
-            <div class="form-group">
-                <label for="id_skills">Skills</label>
-                <textarea name="skills" id="id_skills" rows="3" placeholder="e.g. Python, Django, React, SQL..."></textarea>
-            </div>
-            <div class="form-group">
-                <label for="id_resume">Resume (PDF / DOC)</label>
-                <input type="file" name="resume" id="id_resume" required style="padding: 10px; background: var(--background);">
+                <div class="form-group">
+                    <label for="id_degree">Degree <span style="color: var(--error);">*</span></label>
+                    <input type="text" name="degree" id="id_degree" placeholder="e.g. B.Tech Computer Science">
+                </div>
+                <div class="form-group">
+                    <label for="id_skills">Skills</label>
+                    <textarea name="skills" id="id_skills" rows="3" placeholder="e.g. Python, Django, React, SQL..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="id_resume">Resume (PDF / DOC) <span style="font-size: 0.8em; color: var(--text-muted);">(Optional)</span></label>
+                    <input type="file" name="resume" id="id_resume" style="padding: 10px; background: var(--background);">
+                </div>
             </div>
 
             {% if form.non_field_errors %}
                 <div class="alert alert-error">{{ form.non_field_errors }}</div>
             {% endif %}
+            {% if form.errors %}
+                <div class="alert alert-error">Please correct the errors above.</div>
+            {% endif %}
 
             <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1rem; margin-top: 1rem;">Create Account</button>
         </form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const roleInputs = document.querySelectorAll('input[name="role"]');
+        const studentSection = document.getElementById('student-profile-section');
+
+        function toggleSection() {
+            let selectedRole = document.querySelector('input[name="role"]:checked');
+            if (selectedRole && selectedRole.value === 'admin') {
+                studentSection.style.display = 'none';
+            } else {
+                studentSection.style.display = 'block';
+            }
+        }
+
+        if (roleInputs.length > 0) {
+            roleInputs.forEach(input => {
+                input.addEventListener('change', toggleSection);
+            });
+            toggleSection(); // run on load
+        }
+    });
+</script>
 
         <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted);">
             Already have an account? <a href="{% url 'login' %}" style="color: var(--primary);">Sign in</a>
