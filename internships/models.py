@@ -44,7 +44,7 @@ class Student(models.Model):
     phone = models.CharField(max_length=15, blank=True)
     college = models.CharField(max_length=255, blank=True)
     degree = models.CharField(max_length=255, blank=True)
-    cgpa = models.DecimalField(max_digits=4, decimal_places=2)
+    cgpa = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     skills = models.TextField(blank=True, null=True)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
 

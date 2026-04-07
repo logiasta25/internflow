@@ -44,7 +44,7 @@ class StudentRegistrationForm(forms.ModelForm):
                 phone=self.cleaned_data.get('phone', ''),
                 college=self.cleaned_data.get('college', ''),
                 degree=self.cleaned_data.get('degree', ''),
-                cgpa=self.cleaned_data.get('cgpa', 0.0),
+                cgpa=self.cleaned_data.get('cgpa') or None,
                 skills=self.cleaned_data.get('skills', ''),
                 resume=self.cleaned_data.get('resume')
             )
